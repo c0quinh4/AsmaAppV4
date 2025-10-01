@@ -1,0 +1,1 @@
+C:\TCC\App\AsmaAppV4\android\app\build\intermediates\cxx\Debug\946675j1\obj\arm64-v8a

@@ -1,0 +1,51 @@
+@"
+# --- Node / Logs / Cache ---
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.cache/
+.metro-cache/
+.tmp/
+temp/
+*.tmp
+
+# --- Expo / Metro ---
+.expo/
+.expo-shared/
+web-build/
+dist/
+.bundle/
+
+# --- Build artefacts ---
+# Android
+android/app/build/
+android/.gradle/
+android/.cxx/
+android/local.properties
+*.apk
+*.aab
+
+# iOS
+ios/build/
+ios/DerivedData/
+# Se você usa CocoaPods, geralmente ignore:
+ios/Pods/
+
+# --- IDE / SO ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# --- Env / Segredos (NÃO versionar) ---
+.env
+.env.*
+*.keystore
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# --- Test / Coverage ---
+coverage/
+"@ | Out-File -Encoding UTF8 .gitignore
