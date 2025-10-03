@@ -1,0 +1,9 @@
+adb devices
+adb pair 192.168.7.10:
+
+git add .
+git commit -M ""
+git push
+
+npx expo run:android
+npx expo start -c
