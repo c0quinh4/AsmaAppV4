@@ -55,9 +55,10 @@
     },
     "extra": {
       "router": {},
-      "eas": {
-        "projectId": "dce95ca7-282c-48cc-ab7b-07d5b70c61d1"
-      }
+      "eas": { "projectId": "dce95ca7-282c-48cc-ab7b-07d5b70c61d1"},
+      "googleApiKey": "AIzaSyA9C2TMLBG_bvIE8iaN1f5qUdLnpTvBLJo",
+      "geminiModel": "gemini-2.5-flash",
+      "embeddingModel": "models/text-embedding-004"
     }
   }
 }
