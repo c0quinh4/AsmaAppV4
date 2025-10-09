@@ -1,7 +1,8 @@
 // hooks/useMqttSensors.ts
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Client, Message } from 'paho-mqtt';
-import { Buffer } from 'buffer'; // para conversões em publish
+import { Buffer } from 'buffer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   MQTT_BROKER_URL,
@@ -16,12 +17,28 @@ type SensorValue = {
 };
 type SensorMap = Partial<Record<SensorId, SensorValue>>;
 
+type HistoryEntry = { ts: number; value: number | string };
+type HistoryMap = Partial<Record<SensorId, HistoryEntry[]>>;
+
+const STORE_KEY = '@asma/sensors:last';
+const HISTORY_KEY = '@asma/sensors:history';
+const HISTORY_MAX = 100;
+
+/** Considera "0" para número 0 ou string que parseia para 0 (ex.: "0", "0.0"). */
+function isZeroLike(v: number | string): boolean {
+  if (typeof v === 'number') return v === 0;
+  const s = String(v).trim();
+  const n = Number(s);
+  if (!Number.isNaN(n)) return n === 0;
+  return s === '0';
+}
+
 function isSensorId(x: string | undefined): x is SensorId {
   return !!x && Object.prototype.hasOwnProperty.call(SENSORS_META, x);
 }
 
 function parsePayloadFromString(text: string): number | string {
-  // Tenta JSON com chave { "valor": ... }
+  // tenta JSON { "valor": ... }
   try {
     const obj = JSON.parse(text);
     if (obj && typeof obj === 'object' && 'valor' in obj) {
@@ -31,50 +48,116 @@ function parsePayloadFromString(text: string): number | string {
   } catch {
     // não era JSON
   }
-
-  // Tenta número cru
+  // tenta número cru
   const n = Number(text);
   if (!Number.isNaN(n)) return n;
-
-  // Fallback: string original
   return text;
+}
+
+/** Pega último valor NÃO-ZERO para IA; cai para o último em memória se for válido. */
+function pickLastForAI(
+  id: SensorId,
+  last: SensorValue | undefined,
+  history: HistoryMap
+): number | string | undefined {
+  const arr = history[id] ?? [];
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const v = arr[i].value;
+    if (!isZeroLike(v)) return v;
+  }
+  if (last?.value !== undefined && !isZeroLike(last.value)) {
+    return last.value;
+  }
+  return undefined;
 }
 
 export function useMqttSensors() {
   const clientRef = useRef<Client | null>(null);
   const [connected, setConnected] = useState(false);
   const [sensors, setSensors] = useState<SensorMap>({});
+  const [history, setHistory] = useState<HistoryMap>({});
 
+  // Rehidrata cache e histórico
   useEffect(() => {
-    // Paho aceita URL wss e clientId
+    (async () => {
+      try {
+        const [rawLast, rawHist] = await Promise.all([
+          AsyncStorage.getItem(STORE_KEY),
+          AsyncStorage.getItem(HISTORY_KEY),
+        ]);
+        if (rawLast) {
+          const parsed = JSON.parse(rawLast) as SensorMap;
+          const sanitized: SensorMap = {};
+          Object.entries(parsed).forEach(([k, v]) => {
+            if (isSensorId(k) && v && typeof v === 'object') {
+              sanitized[k as SensorId] = v as SensorValue;
+            }
+          });
+          setSensors(sanitized);
+        }
+        if (rawHist) {
+          const parsed = JSON.parse(rawHist) as HistoryMap;
+          const sanitized: HistoryMap = {};
+          Object.entries(parsed).forEach(([k, v]) => {
+            if (isSensorId(k) && Array.isArray(v)) {
+              sanitized[k as SensorId] = v as HistoryEntry[];
+            }
+          });
+          setHistory(sanitized);
+        }
+      } catch (e) {
+        console.warn('Falha ao carregar cache/histórico:', e);
+      }
+    })();
+  }, []);
+
+  // Conexão MQTT (Paho)
+  useEffect(() => {
     const clientId = `asmaapp-${Math.random().toString(16).slice(2)}`;
-    // Ex.: 'wss://broker.hivemq.com:8884/mqtt'
     const client = new Client(MQTT_BROKER_URL, clientId);
     clientRef.current = client;
 
-    client.onConnectionLost = () => {
-      setConnected(false);
-    };
+    client.onConnectionLost = () => setConnected(false);
 
-    client.onMessageArrived = (msg) => {
-      const topic = msg.destinationName; // ex.: sensorestcc/batimentos-cardiacos
+    client.onMessageArrived = (msg: Message) => {
+      const topic = msg.destinationName; // sensorestcc/<id>
       const parts = topic?.split('/') ?? [];
       const id = parts[1];
 
       if (!isSensorId(id)) return;
 
-      // payloadString sempre vem em string no Paho
       const text = msg.payloadString ?? '';
-      const value = parsePayloadFromString(text);
+      const parsed = parsePayloadFromString(text);
+      const now = Date.now();
 
-      setSensors((prev) => ({
-        ...prev,
-        [id]: { value, updatedAt: Date.now() },
-      }));
+      // 1) Sempre registra no HISTÓRICO (inclusive zeros)
+      setHistory((prev) => {
+        const arr = [...(prev[id] ?? [])];
+        arr.push({ ts: now, value: parsed });
+        while (arr.length > HISTORY_MAX) arr.shift();
+        const next = { ...prev, [id]: arr };
+        AsyncStorage.setItem(HISTORY_KEY, JSON.stringify(next)).catch(() => {});
+        return next;
+      });
+
+      // 2) Filtro: NÃO sobrescrever "último valor" quando for zero-like
+      if (isZeroLike(parsed)) {
+        return; // aborta update do "sensors"
+      }
+
+      // 3) Atualiza último valor válido
+      setSensors((prev) => {
+        const next: SensorMap = {
+          ...prev,
+          [id]: { value: parsed, updatedAt: now },
+        };
+        AsyncStorage.setItem(STORE_KEY, JSON.stringify(next)).catch(() => {});
+        return next;
+      });
     };
 
     client.connect({
-      useSSL: true, // obrigatório para wss
+      useSSL: true,
       timeout: 10,
       keepAliveInterval: 60,
       cleanSession: true,
@@ -96,7 +179,7 @@ export function useMqttSensors() {
     };
   }, []);
 
-  // Publicação: aceita string, Uint8Array ou ArrayBuffer
+  // Publicação
   const publish = (topic: string, msg: string | Uint8Array | ArrayBuffer) => {
     const c = clientRef.current;
     if (!c || !connected) return;
@@ -115,5 +198,18 @@ export function useMqttSensors() {
     }
   };
 
-  return useMemo(() => ({ connected, sensors, publish }), [connected, sensors]);
+  // Snapshot pronto para a IA (ignora zeros para todos os sensores)
+  const getAISnapshot = (): Partial<Record<SensorId, number | string>> => {
+    const out: Partial<Record<SensorId, number | string>> = {};
+    (Object.keys(SENSORS_META) as SensorId[]).forEach((id) => {
+      const v = pickLastForAI(id, sensors[id], history);
+      if (v !== undefined) out[id] = v;
+    });
+    return out;
+  };
+
+  return useMemo(
+    () => ({ connected, sensors, history, publish, getAISnapshot }),
+    [connected, sensors, history]
+  );
 }

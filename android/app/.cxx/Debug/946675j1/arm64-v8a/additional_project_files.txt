@@ -1,3 +1,10 @@
+C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\rnasyncstorage_autolinked_build\CMakeFiles\react_codegen_rnasyncstorage.dir\react\renderer\components\rnasyncstorage\ComponentDescriptors.cpp.o
+C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\rnasyncstorage_autolinked_build\CMakeFiles\react_codegen_rnasyncstorage.dir\react\renderer\components\rnasyncstorage\EventEmitters.cpp.o
+C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\rnasyncstorage_autolinked_build\CMakeFiles\react_codegen_rnasyncstorage.dir\react\renderer\components\rnasyncstorage\Props.cpp.o
+C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\rnasyncstorage_autolinked_build\CMakeFiles\react_codegen_rnasyncstorage.dir\react\renderer\components\rnasyncstorage\ShadowNodes.cpp.o
+C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\rnasyncstorage_autolinked_build\CMakeFiles\react_codegen_rnasyncstorage.dir\react\renderer\components\rnasyncstorage\States.cpp.o
+C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\rnasyncstorage_autolinked_build\CMakeFiles\react_codegen_rnasyncstorage.dir\react\renderer\components\rnasyncstorage\rnasyncstorageJSI-generated.cpp.o
+C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\rnasyncstorage_autolinked_build\CMakeFiles\react_codegen_rnasyncstorage.dir\rnasyncstorage-generated.cpp.o
 C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\BlePlx_autolinked_build\CMakeFiles\react_codegen_BlePlx.dir\BlePlx-generated.cpp.o
 C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\BlePlx_autolinked_build\CMakeFiles\react_codegen_BlePlx.dir\react\renderer\components\BlePlx\BlePlxJSI-generated.cpp.o
 C:\TCC\App\AsmaAppV4\android\app\.cxx\Debug\946675j1\arm64-v8a\BlePlx_autolinked_build\CMakeFiles\react_codegen_BlePlx.dir\react\renderer\components\BlePlx\ComponentDescriptors.cpp.o

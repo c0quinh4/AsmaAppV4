@@ -1,6 +1,9 @@
 C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/CMakeFiles/appmodules.dir
 C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/CMakeFiles/edit_cache.dir
 C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/rnasyncstorage_autolinked_build/CMakeFiles/react_codegen_rnasyncstorage.dir
+C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/rnasyncstorage_autolinked_build/CMakeFiles/edit_cache.dir
+C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/rnasyncstorage_autolinked_build/CMakeFiles/rebuild_cache.dir
 C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/BlePlx_autolinked_build/CMakeFiles/react_codegen_BlePlx.dir
 C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/BlePlx_autolinked_build/CMakeFiles/edit_cache.dir
 C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/armeabi-v7a/BlePlx_autolinked_build/CMakeFiles/rebuild_cache.dir

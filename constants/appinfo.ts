@@ -1,2 +1,2 @@
-export const APP_NAME = 'App Nome';
-export const APP_DESC = 'App Descrição';
+export const APP_NAME = 'AsmaGo';
+export const APP_DESC = 'Versão Mobile';

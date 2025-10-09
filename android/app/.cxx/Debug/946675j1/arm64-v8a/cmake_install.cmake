@@ -44,6 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
+  include("C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/arm64-v8a/rnasyncstorage_autolinked_build/cmake_install.cmake")
   include("C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/arm64-v8a/BlePlx_autolinked_build/cmake_install.cmake")
   include("C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/arm64-v8a/rngesturehandler_codegen_autolinked_build/cmake_install.cmake")
   include("C:/TCC/App/AsmaAppV4/android/app/.cxx/Debug/946675j1/arm64-v8a/rnreanimated_autolinked_build/cmake_install.cmake")
